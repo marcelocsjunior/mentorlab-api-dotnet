@@ -1,22 +1,19 @@
 using MentorLab.Api.Data;
 using MentorLab.Api.Services;
+using MentorLab.Api.Services.Students;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var databaseDirectory = Path.Combine(builder.Environment.ContentRootPath, "data");
-var databasePath = Path.Combine(databaseDirectory, "mentorlab.db");
-
-Directory.CreateDirectory(databaseDirectory);
 
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<MentorLabDbContext>(options =>
 {
-    options.UseSqlite($"Data Source={databasePath}");
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    options.UseSqlite(connectionString);
 });
 
-builder.Services.AddScoped<StudentService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -31,12 +28,6 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<MentorLabDbContext>();
-    dbContext.Database.EnsureCreated();
-}
 
 if (app.Environment.IsDevelopment())
 {
