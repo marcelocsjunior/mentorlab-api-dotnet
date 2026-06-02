@@ -1,9 +1,8 @@
 namespace MentorLab.Api.Dtos;
 
-public record UpdateStudentRequest(
-    string FullName,
-    string Email,
-    string? Phone,
-    string? GitHubUsername,
-    bool IsActive
-);
+public sealed class UpdateStudentRequest
+{
+    public string FullName { get; init; } = string.Empty;
+
+    public string Email { get; init; } = string.Empty;
+}
