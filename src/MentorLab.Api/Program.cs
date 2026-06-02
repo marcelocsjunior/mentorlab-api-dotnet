@@ -1,4 +1,6 @@
 using MentorLab.Api.Data;
+using MentorLab.Api.Services.LearningTracks;
+using MentorLab.Api.Services.Modules;
 using MentorLab.Api.Services.Students;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +14,8 @@ builder.Services.AddDbContext<MentorLabDbContext>(options =>
 });
 
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<ILearningTrackService, LearningTrackService>();
+builder.Services.AddScoped<IModuleService, ModuleService>();
 
 builder.Services.AddEndpointsApiExplorer();
 
