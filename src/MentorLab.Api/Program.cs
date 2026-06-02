@@ -4,16 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Directory.CreateDirectory(Path.Combine(builder.Environment.ContentRootPath, "data"));
+var databaseDirectory = Path.Combine(builder.Environment.ContentRootPath, "data");
+var databasePath = Path.Combine(databaseDirectory, "mentorlab.db");
+
+Directory.CreateDirectory(databaseDirectory);
 
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<MentorLabDbContext>(options =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("MentorLabDatabase")
-        ?? "Data Source=data/mentorlab.db";
-
-    options.UseSqlite(connectionString);
+    options.UseSqlite($"Data Source={databasePath}");
 });
 
 builder.Services.AddScoped<StudentService>();
