@@ -203,10 +203,16 @@ dotnet test MentorLab.sln --configuration Release --no-build --verbosity normal
 
 Esse quality gate impede que mudanças sejam aprovadas sem validar restore, build e testes automatizados.
 
+## Branch Protection / Quality Gate
+
+A branch `main` deve ser protegida no GitHub para transformar o workflow `.NET CI` em um quality gate real.
+
+Com a proteção ativa, PRs para `main` devem passar pelo check `Restore, build and test` antes do merge. A regra também deve bloquear force push e deleção da `main`.
+
 ## Status
 
 ```text
-Status: Sprint 5 — CI Quality Gate com GitHub Actions
+Status: Sprint 6 — Branch Protection e Required CI Checks
 ```
 
 ## Documentação por sprint
@@ -215,6 +221,7 @@ Status: Sprint 5 — CI Quality Gate com GitHub Actions
 - [Sprint 3 — Learning Tracks e Modules](docs/sprint-3-learning-tracks-modules.md)
 - [Sprint 4 — Automated Tests](docs/sprint-4-automated-tests.md)
 - [Sprint 5 — CI Quality Gate](docs/sprint-5-ci-quality-gate.md)
+- [Sprint 6 — Branch Protection](docs/sprint-6-branch-protection.md)
 
 ## Licença
 

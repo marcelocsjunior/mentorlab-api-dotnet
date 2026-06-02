@@ -3,10 +3,62 @@
 ## Baseline atual
 
 ```text
-Versão: main pós Sprint 4 automated tests
+Versão: main pós Sprint 5 CI Quality Gate
 Data de validação local: 2026-06-02
 Branch validada: main
 Status: validado localmente
+```
+
+## Sprint 6 em validação
+
+```text
+Sprint: Sprint 6 — Branch Protection e Required CI Checks
+Data de validação local: 2026-06-02
+Branch validada: sprint-6-branch-protection-docs
+Status: governança de repositório documentada para Pull Request
+```
+
+A Sprint 6 documenta a proteção da branch `main` e o uso do check `Restore, build and test` como required status check.
+
+Tentativa de configuração automática:
+
+```text
+Ferramenta: GitHub CLI
+Resultado: não aplicada automaticamente
+Motivo: token local do gh inválido
+```
+
+Procedimento manual documentado em `docs/sprint-6-branch-protection.md`.
+
+Comandos executados localmente:
+
+```bash
+git checkout main
+git pull origin main
+git checkout -b sprint-6-branch-protection-docs
+dotnet restore MentorLab.sln
+dotnet build MentorLab.sln
+dotnet test MentorLab.sln
+```
+
+Resultado registrado:
+
+```text
+Restore OK
+Build OK
+Test OK
+22 testes executados
+0 falhas
+```
+
+Escopo de governança:
+
+```text
+Branch protegida esperada: main
+Required check esperado: Restore, build and test
+Force push: bloqueado
+Deleção da main: bloqueada
+Merge esperado: via Pull Request
 ```
 
 ## Sprint 5 em validação
@@ -224,3 +276,5 @@ Na Sprint 3, a narrativa evolui para modelagem relacional: uma trilha de aprendi
 Na Sprint 4, a narrativa evolui para confiabilidade: a API passa a ter testes automatizados de services e endpoints, com SQLite em memória para isolamento e `WebApplicationFactory` para regressão dos endpoints principais.
 
 Na Sprint 5, a narrativa evolui para governança: o GitHub Actions passa a validar automaticamente restore, build e testes em todo PR para `main`, reduzindo risco de regressão antes do merge.
+
+Na Sprint 6, a governança é formalizada com branch protection: o CI deixa de ser apenas uma automação e passa a ser uma condição obrigatória para merge na `main`.
