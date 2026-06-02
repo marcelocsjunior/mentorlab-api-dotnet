@@ -36,6 +36,54 @@ A proposta é treinar desenvolvimento back-end de forma aplicada, usando um dom�
 
 ---
 
+## Como executar localmente
+
+Pré-requisito:
+
+- .NET SDK 8 ou superior instalado
+
+Comandos:
+
+```bash
+git clone https://github.com/marcelocsjunior/mentorlab-api-dotnet.git
+cd mentorlab-api-dotnet
+dotnet restore MentorLab.sln
+dotnet build MentorLab.sln
+dotnet run --project src/MentorLab.Api/MentorLab.Api.csproj
+```
+
+A API será iniciada em:
+
+```text
+http://localhost:5080
+https://localhost:7080
+```
+
+Swagger:
+
+```text
+http://localhost:5080/swagger
+```
+
+Endpoint de status:
+
+```http
+GET /api/status
+```
+
+Resposta esperada:
+
+```json
+{
+  "status": "ok",
+  "service": "MentorLab API",
+  "environment": "Development",
+  "timestampUtc": "2026-01-01T00:00:00+00:00"
+}
+```
+
+---
+
 ## Escopo do MVP
 
 ### Entidades principais
@@ -62,6 +110,8 @@ A proposta é treinar desenvolvimento back-end de forma aplicada, usando um dom�
 ## Endpoints previstos
 
 ```http
+GET    /api/status
+
 GET    /api/students
 GET    /api/students/{id}
 POST   /api/students
@@ -177,7 +227,7 @@ Este projeto também será usado como material de apoio para explicar conceitos 
 ## Status
 
 ```text
-Status: Planejamento e baseline inicial
+Status: Sprint 1 — Bootstrap ASP.NET Core Web API em andamento
 ```
 
 ---
