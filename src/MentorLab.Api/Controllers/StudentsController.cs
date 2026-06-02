@@ -1,5 +1,5 @@
-using MentorLab.Api.Dtos;
-using MentorLab.Api.Services;
+using MentorLab.Api.DTOs.Students;
+using MentorLab.Api.Services.Students;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MentorLab.Api.Controllers;
@@ -8,102 +8,85 @@ namespace MentorLab.Api.Controllers;
 [Route("api/students")]
 public class StudentsController : ControllerBase
 {
-    private readonly StudentService _studentService;
+    private readonly IStudentService _studentService;
 
-    public StudentsController(StudentService studentService)
+    public StudentsController(IStudentService studentService)
     {
         _studentService = studentService;
     }
 
     [HttpGet]
     [ProducesResponseType(typeof(List<StudentResponse>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<StudentResponse>>> GetAll([FromQuery] bool includeInactive = false)
+    public async Task<ActionResult<List<StudentResponse>>> GetAll()
     {
-        var students = await _studentService.GetAllAsync(includeInactive);
+        var students = await _studentService.GetAllAsync();
         return Ok(students);
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(StudentResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<StudentResponse>> GetById(Guid id)
+    public async Task<ActionResult<StudentResponse>> GetById(int id)
     {
         var student = await _studentService.GetByIdAsync(id);
-
-        if (student is null)
-        {
-            return NotFound(new { message = "Aluno não encontrado." });
-        }
-
-        return Ok(student);
+        return student is null ? NotFound() : Ok(student);
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(StudentResponse), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<StudentResponse>> Create(CreateStudentRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.FullName))
+        try
         {
-            return BadRequest(new { message = "Nome completo é obrigatório." });
-        }
+            var student = await _studentService.CreateAsync(request);
 
-        if (string.IsNullOrWhiteSpace(request.Email))
+            return CreatedAtAction(nameof(GetById), new { id = student.Id }, student);
+        }
+        catch (ArgumentException exception)
         {
-            return BadRequest(new { message = "E-mail é obrigatório." });
+            return BadRequest(new { message = exception.Message });
         }
-
-        if (await _studentService.EmailExistsAsync(request.Email))
+        catch (InvalidOperationException exception)
         {
-            return Conflict(new { message = "Já existe aluno cadastrado com este e-mail." });
+            return Conflict(new { message = exception.Message });
         }
-
-        var student = await _studentService.CreateAsync(request);
-
-        return CreatedAtAction(nameof(GetById), new { id = student.Id }, student);
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut("{id:int}")]
     [ProducesResponseType(typeof(StudentResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<StudentResponse>> Update(Guid id, UpdateStudentRequest request)
+    public async Task<ActionResult<StudentResponse>> Update(int id, UpdateStudentRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.FullName))
+        try
         {
-            return BadRequest(new { message = "Nome completo é obrigatório." });
-        }
+            var student = await _studentService.UpdateAsync(id, request);
 
-        if (string.IsNullOrWhiteSpace(request.Email))
+            if (student is null)
+            {
+                return NotFound(new { message = "Aluno não encontrado." });
+            }
+
+            return Ok(student);
+        }
+        catch (ArgumentException exception)
         {
-            return BadRequest(new { message = "E-mail é obrigatório." });
+            return BadRequest(new { message = exception.Message });
         }
-
-        if (await _studentService.EmailExistsAsync(request.Email, id))
+        catch (InvalidOperationException exception)
         {
-            return Conflict(new { message = "Já existe outro aluno cadastrado com este e-mail." });
+            return Conflict(new { message = exception.Message });
         }
-
-        var student = await _studentService.UpdateAsync(id, request);
-
-        if (student is null)
-        {
-            return NotFound(new { message = "Aluno não encontrado." });
-        }
-
-        return Ok(student);
     }
 
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var deactivated = await _studentService.DeactivateAsync(id);
+        var deleted = await _studentService.DeleteAsync(id);
 
-        if (!deactivated)
+        if (!deleted)
         {
             return NotFound(new { message = "Aluno não encontrado." });
         }
