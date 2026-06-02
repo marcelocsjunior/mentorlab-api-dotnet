@@ -2,7 +2,7 @@
 
 API educacional em ASP.NET Core Web API para demonstrar fundamentos de back-end .NET com uma arquitetura simples, didática e explicável.
 
-Nesta sprint, o projeto entrega o primeiro CRUD real da aplicação: Students.
+Nesta sprint, o projeto expande a API com Learning Tracks e Modules, mantendo o CRUD de Students preservado.
 
 ## Stack
 
@@ -31,10 +31,18 @@ Compilar:
 dotnet build MentorLab.sln
 ```
 
-Gerar migration:
+Gerar migration inicial:
 
 ```bash
 dotnet ef migrations add InitialCreate \
+  --project src/MentorLab.Api/MentorLab.Api.csproj \
+  --output-dir Migrations
+```
+
+Gerar migration evolutiva da Sprint 3:
+
+```bash
+dotnet ef migrations add AddLearningTracksAndModules \
   --project src/MentorLab.Api/MentorLab.Api.csproj \
   --output-dir Migrations
 ```
@@ -75,6 +83,26 @@ PUT    /api/students/{id}
 DELETE /api/students/{id}
 ```
 
+Learning Tracks:
+
+```http
+GET    /api/learning-tracks
+GET    /api/learning-tracks/{id}
+POST   /api/learning-tracks
+PUT    /api/learning-tracks/{id}
+DELETE /api/learning-tracks/{id}
+GET    /api/learning-tracks/{trackId}/modules
+POST   /api/learning-tracks/{trackId}/modules
+```
+
+Modules:
+
+```http
+GET    /api/modules/{id}
+PUT    /api/modules/{id}
+DELETE /api/modules/{id}
+```
+
 Payload para criar aluno:
 
 ```json
@@ -84,17 +112,38 @@ Payload para criar aluno:
 }
 ```
 
-## Arquitetura da Sprint 2
+Payload para criar trilha:
+
+```json
+{
+  "title": "Fundamentos de ASP.NET Core",
+  "description": "Trilha para construção de APIs REST com .NET."
+}
+```
+
+Payload para criar módulo em uma trilha:
+
+```json
+{
+  "title": "Controller, DTO e Service",
+  "description": "Separação de responsabilidades na API.",
+  "displayOrder": 1
+}
+```
+
+## Arquitetura atual
 
 O Controller recebe as requisições HTTP, chama o Service e devolve os status codes corretos.
 
 Os DTOs definem os contratos de entrada e saída da API, sem expor diretamente a entidade persistida.
 
-O Service concentra as regras de negócio, como validação de nome, validação de e-mail, prevenção de e-mail duplicado ativo e soft delete.
+O Service concentra as regras de negócio, como validações de entrada, prevenção de duplicidade ativa quando aplicável, ordenação de módulos e soft delete.
 
-Dependency Injection registra o `IStudentService` e injeta a implementação no controller, reduzindo acoplamento.
+Dependency Injection registra `IStudentService`, `ILearningTrackService` e `IModuleService`, injetando as implementações nos controllers.
 
-O EF Core usa o `MentorLabDbContext` para mapear a entidade `Student` e persistir os dados no SQLite.
+O EF Core usa o `MentorLabDbContext` para mapear `Student`, `LearningTrack` e `Module` e persistir os dados no SQLite.
+
+Na Sprint 3, `LearningTrack` possui relacionamento 1:N com `Module`. A FK `Module.LearningTrackId` usa `DeleteBehavior.Restrict`, e a propriedade `Module.Order` é mapeada para a coluna `DisplayOrder`.
 
 Fluxo:
 
@@ -119,8 +168,13 @@ Arquivos locais de banco, como `mentorlab.db`, `*.db`, `*.sqlite`, `*.sqlite3`, 
 ## Status
 
 ```text
-Status: Sprint 2 — Students API com EF Core
+Status: Sprint 3 — Learning Tracks e Modules com relacionamento 1:N
 ```
+
+## Documentação por sprint
+
+- [Sprint 2 — Students API](docs/sprint-2-students-api.md)
+- [Sprint 3 — Learning Tracks e Modules](docs/sprint-3-learning-tracks-modules.md)
 
 ## Licença
 
