@@ -3,10 +3,57 @@
 ## Baseline atual
 
 ```text
-Versão: v0.2.0-students-api
+Versão: v0.3.0-learning-tracks-modules
 Data de validação local: 2026-06-02
 Branch validada: main
 Status: validado localmente
+```
+
+## Sprint 4 em validação
+
+```text
+Sprint: Sprint 4 — Automated Tests
+Issue relacionada: #9 — Sprint 4 — Automated Tests com xUnit e WebApplicationFactory
+Data de validação local: 2026-06-02
+Branch validada: sprint-4-automated-tests
+Status: validado localmente para Pull Request
+```
+
+A Sprint 4 foi rebaseada sobre `origin/main` em `2026-06-02` e não altera o comportamento funcional da API.
+
+Comandos executados:
+
+```bash
+git fetch origin
+git checkout sprint-4-automated-tests
+git rebase origin/main
+dotnet restore MentorLab.sln
+dotnet build MentorLab.sln
+dotnet test MentorLab.sln
+```
+
+Resultado registrado:
+
+```text
+Rebase OK
+Restore OK
+Build OK
+0 Warning(s)
+0 Error(s)
+Test OK
+22 testes executados
+0 falhas
+```
+
+Escopo testado:
+
+```text
+StudentService tests      -> OK
+LearningTrackService tests -> OK
+ModuleService tests       -> OK
+Endpoint tests            -> OK
+Regressão Students        -> OK
+SQLite em memória         -> OK
 ```
 
 ## Sprint 3 em validação
@@ -131,3 +178,5 @@ Esta baseline demonstra o primeiro CRUD real do MentorLab API usando Controller 
 O projeto está em estado apresentável para portfólio técnico e pode ser usado como base prática para a aula teste da banca.
 
 Na Sprint 3, a narrativa evolui para modelagem relacional: uma trilha de aprendizado possui vários módulos, cada módulo pertence a uma única trilha, e a API expõe esse relacionamento com endpoints REST aninhados e services separados por domínio.
+
+Na Sprint 4, a narrativa evolui para confiabilidade: a API passa a ter testes automatizados de services e endpoints, com SQLite em memória para isolamento e `WebApplicationFactory` para regressão dos endpoints principais.
