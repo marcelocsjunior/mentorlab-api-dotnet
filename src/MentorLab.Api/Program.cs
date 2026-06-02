@@ -14,6 +14,8 @@ builder.Services.AddDbContext<MentorLabDbContext>(options =>
 });
 
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<ILearningTrackService, LearningTrackService>();
+builder.Services.AddScoped<IModuleService, ModuleService>();
 
 builder.Services.AddEndpointsApiExplorer();
 
