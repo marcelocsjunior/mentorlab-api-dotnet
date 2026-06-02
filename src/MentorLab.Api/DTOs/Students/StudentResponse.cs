@@ -1,4 +1,4 @@
-namespace MentorLab.Api.Dtos;
+namespace MentorLab.Api.DTOs.Students;
 
 public record StudentResponse(
     int Id,

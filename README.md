@@ -1,62 +1,54 @@
 # MentorLab API .NET
 
-Projeto educacional em **ASP.NET Core Web API** para demonstrar fundamentos de **back-end .NET**, **C#**, **POO**, **APIs REST**, **Entity Framework Core**, **banco de dados**, **Git/GitHub** e boas práticas de **mentoria técnica**.
+API educacional em ASP.NET Core Web API para demonstrar fundamentos de back-end .NET com uma arquitetura simples, didática e explicável.
 
-Este repositório foi criado como projeto de estudo e portfólio técnico para consolidar conhecimento em desenvolvimento back-end com .NET, com foco em clareza didática, arquitetura simples e aplicabilidade prática.
+Nesta sprint, o projeto entrega o primeiro CRUD real da aplicação: Students.
 
----
+## Stack
 
-## Objetivo
-
-Construir uma API REST para gestão de mentoria técnica, permitindo acompanhar:
-
-- alunos;
-- trilhas de aprendizado;
-- módulos;
-- exercícios;
-- entregas;
-- feedbacks do mentor;
-- evolução técnica dos alunos.
-
-A proposta é treinar desenvolvimento back-end de forma aplicada, usando um domínio educacional diretamente conectado à prática de mentoria.
-
----
-
-## Stack prevista
-
-- .NET 8 ou superior
+- .NET 8
 - ASP.NET Core Web API
-- C#
 - Entity Framework Core
-- SQLite no MVP
-- SQL Server em evolução futura
+- SQLite
 - Swagger / OpenAPI
-- xUnit para testes
-- GitHub Actions em fase posterior
-
----
 
 ## Como executar localmente
 
 Pré-requisito:
 
-- .NET SDK 8 ou superior instalado
+- .NET SDK 8 ou superior
+- `dotnet-ef` instalado para gerar e aplicar migrations
 
-Comandos:
+Restaurar dependências:
 
 ```bash
-git clone https://github.com/marcelocsjunior/mentorlab-api-dotnet.git
-cd mentorlab-api-dotnet
 dotnet restore MentorLab.sln
-dotnet build MentorLab.sln
-dotnet run --project src/MentorLab.Api/MentorLab.Api.csproj
 ```
 
-A API será iniciada em:
+Compilar:
 
-```text
-http://localhost:5080
-https://localhost:7080
+```bash
+dotnet build MentorLab.sln
+```
+
+Gerar migration:
+
+```bash
+dotnet ef migrations add InitialCreate \
+  --project src/MentorLab.Api/MentorLab.Api.csproj \
+  --output-dir Migrations
+```
+
+Aplicar migration no SQLite:
+
+```bash
+dotnet ef database update --project src/MentorLab.Api/MentorLab.Api.csproj
+```
+
+Executar a API:
+
+```bash
+dotnet run --project src/MentorLab.Api/MentorLab.Api.csproj --urls http://0.0.0.0:5080
 ```
 
 Swagger:
@@ -65,172 +57,70 @@ Swagger:
 http://localhost:5080/swagger
 ```
 
-Endpoint de status:
+## Endpoints
+
+Status da API:
 
 ```http
 GET /api/status
 ```
 
-Resposta esperada:
-
-```json
-{
-  "status": "ok",
-  "service": "MentorLab API",
-  "environment": "Development",
-  "timestampUtc": "2026-01-01T00:00:00+00:00"
-}
-```
-
----
-
-## Escopo do MVP
-
-### Entidades principais
-
-- `Student`
-- `LearningTrack`
-- `Module`
-- `Exercise`
-- `Submission`
-- `MentorFeedback`
-
-### Funcionalidades iniciais
-
-- CRUD de alunos
-- CRUD de trilhas
-- CRUD de módulos
-- CRUD de exercícios
-- Registro de entregas
-- Registro de feedbacks
-- Dashboard/resumo operacional via API
-
----
-
-## Endpoints previstos
+Students:
 
 ```http
-GET    /api/status
-
 GET    /api/students
 GET    /api/students/{id}
 POST   /api/students
 PUT    /api/students/{id}
 DELETE /api/students/{id}
-
-GET    /api/tracks
-POST   /api/tracks
-
-GET    /api/modules
-POST   /api/modules
-
-GET    /api/exercises
-POST   /api/exercises
-
-POST   /api/submissions
-GET    /api/submissions/student/{studentId}
-
-POST   /api/feedbacks
-GET    /api/dashboard/summary
 ```
 
----
+Payload para criar aluno:
 
-## Arquitetura prevista
+```json
+{
+  "fullName": "Ana Silva",
+  "email": "ana.silva@example.com"
+}
+```
+
+## Arquitetura da Sprint 2
+
+O Controller recebe as requisições HTTP, chama o Service e devolve os status codes corretos.
+
+Os DTOs definem os contratos de entrada e saída da API, sem expor diretamente a entidade persistida.
+
+O Service concentra as regras de negócio, como validação de nome, validação de e-mail, prevenção de e-mail duplicado ativo e soft delete.
+
+Dependency Injection registra o `IStudentService` e injeta a implementação no controller, reduzindo acoplamento.
+
+O EF Core usa o `MentorLabDbContext` para mapear a entidade `Student` e persistir os dados no SQLite.
+
+Fluxo:
 
 ```text
-src/
-  MentorLab.Api/
-    Controllers/
-    Data/
-    DTOs/
-    Entities/
-    Services/
-    Validators/
-    Program.cs
-    appsettings.json
-
-tests/
-  MentorLab.Tests/
-
-docs/
-  arquitetura.md
-  roteiro-banca.md
-  exemplos-requisicoes.md
+Cliente -> Controller -> Service -> DbContext -> SQLite -> Response
 ```
 
-A arquitetura inicial será simples e didática, com separação clara entre:
+## Configuração de banco
 
-| Camada | Responsabilidade |
-|---|---|
-| Controller | Entrada e saída HTTP |
-| DTO | Contrato de entrada/saída da API |
-| Service | Regras de negócio |
-| Entity | Modelo persistido |
-| DbContext | Acesso ao banco via EF Core |
-| Tests | Validação de regras e comportamentos |
+O SQLite usa a connection string em `src/MentorLab.Api/appsettings.json`:
 
----
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=mentorlab.db"
+  }
+}
+```
 
-## Roadmap
-
-### Fase 1 — Baseline
-
-- README
-- licença
-- `.gitignore`
-- documentação inicial
-- definição de escopo
-
-### Fase 2 — MVP técnico
-
-- criação do projeto ASP.NET Core Web API
-- configuração do Swagger
-- SQLite + EF Core
-- CRUD inicial de alunos
-- migrations
-
-### Fase 3 — Qualidade
-
-- DTOs
-- validações
-- tratamento global de erro
-- logs
-- status codes adequados
-- paginação e filtros
-- testes unitários
-
-### Fase 4 — Segurança e portfólio
-
-- autenticação JWT
-- perfis de acesso
-- GitHub Actions
-- documentação final
-- roteiro de apresentação técnica
-
----
-
-## Uso educacional
-
-Este projeto também será usado como material de apoio para explicar conceitos como:
-
-- o que é uma API REST;
-- diferença entre entidade e DTO;
-- separação entre controller, service e persistência;
-- boas práticas de status code;
-- versionamento com Git/GitHub;
-- revisão de código;
-- evolução técnica orientada por feedback.
-
----
+Arquivos locais de banco, como `mentorlab.db`, `*.db`, `*.sqlite`, `*.sqlite3`, não devem ser versionados.
 
 ## Status
 
 ```text
-Status: Sprint 1 — Bootstrap ASP.NET Core Web API em andamento
+Status: Sprint 2 — Students API com EF Core
 ```
-
----
 
 ## Licença
 

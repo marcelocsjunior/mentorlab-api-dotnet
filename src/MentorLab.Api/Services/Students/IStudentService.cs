@@ -1,4 +1,4 @@
-using MentorLab.Api.Dtos;
+using MentorLab.Api.DTOs.Students;
 
 namespace MentorLab.Api.Services.Students;
 
@@ -12,5 +12,5 @@ public interface IStudentService
 
     Task<StudentResponse?> UpdateAsync(int id, UpdateStudentRequest request);
 
-    Task<bool> DeactivateAsync(int id);
+    Task<bool> DeleteAsync(int id);
 }

@@ -1,11 +1,9 @@
-using System.Net.Mail;
 using MentorLab.Api.Data;
-using MentorLab.Api.Dtos;
+using MentorLab.Api.DTOs.Students;
 using MentorLab.Api.Entities;
-using MentorLab.Api.Services.Students;
 using Microsoft.EntityFrameworkCore;
 
-namespace MentorLab.Api.Services;
+namespace MentorLab.Api.Services.Students;
 
 public class StudentService : IStudentService
 {
@@ -39,9 +37,8 @@ public class StudentService : IStudentService
     {
         ValidateStudentData(request.FullName, request.Email);
 
-        var normalizedEmail = NormalizeEmail(request.Email);
-
-        if (await ActiveEmailExistsAsync(normalizedEmail))
+        var email = NormalizeEmail(request.Email);
+        if (await ActiveEmailExistsAsync(email))
         {
             throw new InvalidOperationException("Já existe aluno ativo cadastrado com este e-mail.");
         }
@@ -49,7 +46,7 @@ public class StudentService : IStudentService
         var student = new Student
         {
             FullName = request.FullName.Trim(),
-            Email = normalizedEmail,
+            Email = email,
             IsActive = true,
             CreatedAt = DateTimeOffset.UtcNow
         };
@@ -72,15 +69,14 @@ public class StudentService : IStudentService
             return null;
         }
 
-        var normalizedEmail = NormalizeEmail(request.Email);
-
-        if (await ActiveEmailExistsAsync(normalizedEmail, id))
+        var email = NormalizeEmail(request.Email);
+        if (await ActiveEmailExistsAsync(email, id))
         {
-            throw new InvalidOperationException("Já existe outro aluno ativo cadastrado com este e-mail.");
+            throw new InvalidOperationException("Já existe aluno ativo cadastrado com este e-mail.");
         }
 
         student.FullName = request.FullName.Trim();
-        student.Email = normalizedEmail;
+        student.Email = email;
         student.UpdatedAt = DateTimeOffset.UtcNow;
 
         await _dbContext.SaveChangesAsync();
@@ -88,7 +84,7 @@ public class StudentService : IStudentService
         return ToResponse(student);
     }
 
-    public async Task<bool> DeactivateAsync(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
         var student = await _dbContext.Students
             .FirstOrDefaultAsync(item => item.Id == id && item.IsActive);
@@ -106,43 +102,12 @@ public class StudentService : IStudentService
         return true;
     }
 
-    private async Task<bool> ActiveEmailExistsAsync(string normalizedEmail, int? ignoredStudentId = null)
+    private async Task<bool> ActiveEmailExistsAsync(string email, int? ignoredStudentId = null)
     {
         return await _dbContext.Students.AnyAsync(student =>
             student.IsActive &&
-            student.Email == normalizedEmail &&
+            student.Email == email &&
             (!ignoredStudentId.HasValue || student.Id != ignoredStudentId.Value));
-    }
-
-    private static void ValidateStudentData(string fullName, string email)
-    {
-        if (string.IsNullOrWhiteSpace(fullName))
-        {
-            throw new ArgumentException("Nome completo é obrigatório.", nameof(fullName));
-        }
-
-        if (string.IsNullOrWhiteSpace(email))
-        {
-            throw new ArgumentException("E-mail é obrigatório.", nameof(email));
-        }
-
-        if (!IsValidEmail(email))
-        {
-            throw new ArgumentException("E-mail inválido.", nameof(email));
-        }
-    }
-
-    private static bool IsValidEmail(string email)
-    {
-        try
-        {
-            _ = new MailAddress(email);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
     }
 
     private static StudentResponse ToResponse(Student student)
@@ -155,6 +120,25 @@ public class StudentService : IStudentService
             student.CreatedAt,
             student.UpdatedAt
         );
+    }
+
+    private static void ValidateStudentData(string fullName, string email)
+    {
+        if (string.IsNullOrWhiteSpace(fullName))
+        {
+            throw new ArgumentException("Nome completo é obrigatório.");
+        }
+
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            throw new ArgumentException("E-mail é obrigatório.");
+        }
+
+        var trimmedEmail = email.Trim();
+        if (!trimmedEmail.Contains('@') || trimmedEmail.StartsWith('@') || trimmedEmail.EndsWith('@'))
+        {
+            throw new ArgumentException("Formato de e-mail inválido.");
+        }
     }
 
     private static string NormalizeEmail(string email)

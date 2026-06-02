@@ -1,5 +1,4 @@
 using MentorLab.Api.Data;
-using MentorLab.Api.Services;
 using MentorLab.Api.Services.Students;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,8 +8,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<MentorLabDbContext>(options =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    options.UseSqlite(connectionString);
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 builder.Services.AddScoped<IStudentService, StudentService>();
