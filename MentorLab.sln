@@ -1,8 +1,12 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MentorLab.Api", "src\MentorLab.Api\MentorLab.Api.csproj", "{3F9E9A7A-D64B-4B83-9C18-7B7D4F1D1111}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{210F8BED-A35F-444F-9DDD-5999CC034E6D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MentorLab.Api.Tests", "tests\MentorLab.Api.Tests\MentorLab.Api.Tests.csproj", "{C97BD1ED-7CE3-4BF6-88F8-4904CF2A6CA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,8 +18,15 @@ Global
 		{3F9E9A7A-D64B-4B83-9C18-7B7D4F1D1111}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F9E9A7A-D64B-4B83-9C18-7B7D4F1D1111}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F9E9A7A-D64B-4B83-9C18-7B7D4F1D1111}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C97BD1ED-7CE3-4BF6-88F8-4904CF2A6CA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C97BD1ED-7CE3-4BF6-88F8-4904CF2A6CA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C97BD1ED-7CE3-4BF6-88F8-4904CF2A6CA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C97BD1ED-7CE3-4BF6-88F8-4904CF2A6CA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C97BD1ED-7CE3-4BF6-88F8-4904CF2A6CA8} = {210F8BED-A35F-444F-9DDD-5999CC034E6D}
 	EndGlobalSection
 EndGlobal

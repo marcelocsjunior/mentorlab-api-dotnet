@@ -52,3 +52,5 @@ app.MapGet("/api/status", (IHostEnvironment environment) => Results.Ok(new
 .WithTags("Status");
 
 app.Run();
+
+public partial class Program { }

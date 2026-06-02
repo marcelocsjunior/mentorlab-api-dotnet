@@ -11,6 +11,8 @@ Nesta sprint, o projeto expande a API com Learning Tracks e Modules, mantendo o 
 - Entity Framework Core
 - SQLite
 - Swagger / OpenAPI
+- xUnit
+- WebApplicationFactory
 
 ## Como executar localmente
 
@@ -29,6 +31,12 @@ Compilar:
 
 ```bash
 dotnet build MentorLab.sln
+```
+
+Rodar testes automatizados:
+
+```bash
+dotnet test MentorLab.sln
 ```
 
 Gerar migration inicial:
@@ -165,16 +173,31 @@ O SQLite usa a connection string em `src/MentorLab.Api/appsettings.json`:
 
 Arquivos locais de banco, como `mentorlab.db`, `*.db`, `*.sqlite`, `*.sqlite3`, não devem ser versionados.
 
+## Testes automatizados
+
+A Sprint 4 adiciona testes automatizados em `tests/MentorLab.Api.Tests`.
+
+Os testes de services exercitam regras de negócio de `StudentService`, `LearningTrackService` e `ModuleService` usando SQLite em memória.
+
+Os testes de endpoints usam `WebApplicationFactory<Program>` para subir a API em memória e validar os endpoints principais sem depender do banco local `mentorlab.db`.
+
+Comando:
+
+```bash
+dotnet test MentorLab.sln
+```
+
 ## Status
 
 ```text
-Status: Sprint 3 — Learning Tracks e Modules com relacionamento 1:N
+Status: Sprint 4 — Automated Tests com xUnit e WebApplicationFactory
 ```
 
 ## Documentação por sprint
 
 - [Sprint 2 — Students API](docs/sprint-2-students-api.md)
 - [Sprint 3 — Learning Tracks e Modules](docs/sprint-3-learning-tracks-modules.md)
+- [Sprint 4 — Automated Tests](docs/sprint-4-automated-tests.md)
 
 ## Licença
 
