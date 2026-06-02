@@ -2,11 +2,12 @@ using System.Net.Mail;
 using MentorLab.Api.Data;
 using MentorLab.Api.Dtos;
 using MentorLab.Api.Entities;
+using MentorLab.Api.Services.Students;
 using Microsoft.EntityFrameworkCore;
 
 namespace MentorLab.Api.Services;
 
-public class StudentService
+public class StudentService : IStudentService
 {
     private readonly MentorLabDbContext _dbContext;
 
