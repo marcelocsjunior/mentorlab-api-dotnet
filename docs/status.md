@@ -3,10 +3,52 @@
 ## Baseline atual
 
 ```text
-Versão: v0.3.0-learning-tracks-modules
+Versão: main pós Sprint 4 automated tests
 Data de validação local: 2026-06-02
 Branch validada: main
 Status: validado localmente
+```
+
+## Sprint 5 em validação
+
+```text
+Sprint: Sprint 5 — CI Quality Gate
+Data de validação local: 2026-06-02
+Branch validada: sprint-5-ci-quality-gate
+Status: validado localmente para Pull Request
+```
+
+A Sprint 5 adiciona GitHub Actions como quality gate para `main`, sem alterar código funcional da API ou testes existentes.
+
+Comandos executados localmente:
+
+```bash
+git checkout main
+git pull origin main
+git checkout -b sprint-5-ci-quality-gate
+dotnet restore MentorLab.sln
+dotnet build MentorLab.sln
+dotnet test MentorLab.sln
+```
+
+Resultado registrado:
+
+```text
+Restore OK
+Build OK
+Test OK
+22 testes executados
+0 falhas
+```
+
+Validação automática configurada:
+
+```text
+Workflow: .github/workflows/dotnet-ci.yml
+Gatilhos: push para main, pull_request para main
+Runner: ubuntu-latest
+.NET: 8.0.x
+Comandos: restore, build Release, test Release
 ```
 
 ## Sprint 4 em validação
@@ -180,3 +222,5 @@ O projeto está em estado apresentável para portfólio técnico e pode ser usad
 Na Sprint 3, a narrativa evolui para modelagem relacional: uma trilha de aprendizado possui vários módulos, cada módulo pertence a uma única trilha, e a API expõe esse relacionamento com endpoints REST aninhados e services separados por domínio.
 
 Na Sprint 4, a narrativa evolui para confiabilidade: a API passa a ter testes automatizados de services e endpoints, com SQLite em memória para isolamento e `WebApplicationFactory` para regressão dos endpoints principais.
+
+Na Sprint 5, a narrativa evolui para governança: o GitHub Actions passa a validar automaticamente restore, build e testes em todo PR para `main`, reduzindo risco de regressão antes do merge.
