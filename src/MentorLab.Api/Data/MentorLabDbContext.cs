@@ -17,6 +17,9 @@ public class MentorLabDbContext : DbContext
         {
             entity.HasKey(student => student.Id);
 
+            entity.Property(student => student.Id)
+                .ValueGeneratedOnAdd();
+
             entity.Property(student => student.FullName)
                 .IsRequired()
                 .HasMaxLength(160);
@@ -25,14 +28,13 @@ public class MentorLabDbContext : DbContext
                 .IsRequired()
                 .HasMaxLength(180);
 
-            entity.Property(student => student.Phone)
-                .HasMaxLength(40);
+            entity.Property(student => student.IsActive)
+                .IsRequired();
 
-            entity.Property(student => student.GitHubUsername)
-                .HasMaxLength(80);
+            entity.Property(student => student.CreatedAt)
+                .IsRequired();
 
-            entity.HasIndex(student => student.Email)
-                .IsUnique();
+            entity.HasIndex(student => student.Email);
         });
     }
 }
