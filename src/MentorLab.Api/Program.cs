@@ -29,7 +29,6 @@ app.MapGet("/api/status", (IHostEnvironment environment) => Results.Ok(new
     timestampUtc = DateTimeOffset.UtcNow
 }))
 .WithName("GetApiStatus")
-.WithTags("Status")
-.WithOpenApi();
+.WithTags("Status");
 
 app.Run();
