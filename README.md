@@ -1,5 +1,7 @@
 # MentorLab API .NET
 
+[![.NET CI](https://github.com/marcelocsjunior/mentorlab-api-dotnet/actions/workflows/dotnet-ci.yml/badge.svg)](https://github.com/marcelocsjunior/mentorlab-api-dotnet/actions/workflows/dotnet-ci.yml)
+
 API educacional em ASP.NET Core Web API para demonstrar fundamentos de back-end .NET com uma arquitetura simples, didática e explicável.
 
 Nesta sprint, o projeto expande a API com Learning Tracks e Modules, mantendo o CRUD de Students preservado.
@@ -187,10 +189,24 @@ Comando:
 dotnet test MentorLab.sln
 ```
 
+## CI / Quality Gate
+
+A Sprint 5 adiciona um workflow de GitHub Actions em `.github/workflows/dotnet-ci.yml`.
+
+Todo push para `main` e todo Pull Request direcionado para `main` executa automaticamente:
+
+```bash
+dotnet restore MentorLab.sln
+dotnet build MentorLab.sln --configuration Release --no-restore
+dotnet test MentorLab.sln --configuration Release --no-build --verbosity normal
+```
+
+Esse quality gate impede que mudanças sejam aprovadas sem validar restore, build e testes automatizados.
+
 ## Status
 
 ```text
-Status: Sprint 4 — Automated Tests com xUnit e WebApplicationFactory
+Status: Sprint 5 — CI Quality Gate com GitHub Actions
 ```
 
 ## Documentação por sprint
@@ -198,6 +214,7 @@ Status: Sprint 4 — Automated Tests com xUnit e WebApplicationFactory
 - [Sprint 2 — Students API](docs/sprint-2-students-api.md)
 - [Sprint 3 — Learning Tracks e Modules](docs/sprint-3-learning-tracks-modules.md)
 - [Sprint 4 — Automated Tests](docs/sprint-4-automated-tests.md)
+- [Sprint 5 — CI Quality Gate](docs/sprint-5-ci-quality-gate.md)
 
 ## Licença
 
