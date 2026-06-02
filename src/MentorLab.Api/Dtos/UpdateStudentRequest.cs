@@ -1,8 +1,9 @@
 namespace MentorLab.Api.Dtos;
 
-public record CreateStudentRequest(
+public record UpdateStudentRequest(
     string FullName,
     string Email,
     string? Phone,
-    string? GitHubUsername
+    string? GitHubUsername,
+    bool IsActive
 );
