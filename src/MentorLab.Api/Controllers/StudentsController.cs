@@ -1,5 +1,5 @@
 using MentorLab.Api.Dtos;
-using MentorLab.Api.Services;
+using MentorLab.Api.Services.Students;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MentorLab.Api.Controllers;
@@ -8,40 +8,27 @@ namespace MentorLab.Api.Controllers;
 [Route("api/students")]
 public class StudentsController : ControllerBase
 {
-    private readonly StudentService _studentService;
+    private readonly IStudentService _studentService;
 
-    public StudentsController(StudentService studentService)
+    public StudentsController(IStudentService studentService)
     {
         _studentService = studentService;
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<StudentResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<StudentResponse>>> GetAll()
     {
-        var students = await _studentService.GetAllAsync();
-        return Ok(students);
+        return Ok(await _studentService.GetAllAsync());
     }
 
     [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(StudentResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<StudentResponse>> GetById(int id)
     {
         var student = await _studentService.GetByIdAsync(id);
-
-        if (student is null)
-        {
-            return NotFound(new { message = "Aluno não encontrado." });
-        }
-
-        return Ok(student);
+        return student is null ? NotFound() : Ok(student);
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(StudentResponse), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<StudentResponse>> Create(CreateStudentRequest request)
     {
         try
@@ -49,56 +36,38 @@ public class StudentsController : ControllerBase
             var student = await _studentService.CreateAsync(request);
             return CreatedAtAction(nameof(GetById), new { id = student.Id }, student);
         }
-        catch (ArgumentException exception)
+        catch (ArgumentException ex)
         {
-            return BadRequest(new { message = exception.Message });
+            return BadRequest(new { message = ex.Message });
         }
-        catch (InvalidOperationException exception)
+        catch (InvalidOperationException ex)
         {
-            return Conflict(new { message = exception.Message });
+            return Conflict(new { message = ex.Message });
         }
     }
 
     [HttpPut("{id:int}")]
-    [ProducesResponseType(typeof(StudentResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<StudentResponse>> Update(int id, UpdateStudentRequest request)
     {
         try
         {
             var student = await _studentService.UpdateAsync(id, request);
-
-            if (student is null)
-            {
-                return NotFound(new { message = "Aluno não encontrado." });
-            }
-
-            return Ok(student);
+            return student is null ? NotFound() : Ok(student);
         }
-        catch (ArgumentException exception)
+        catch (ArgumentException ex)
         {
-            return BadRequest(new { message = exception.Message });
+            return BadRequest(new { message = ex.Message });
         }
-        catch (InvalidOperationException exception)
+        catch (InvalidOperationException ex)
         {
-            return Conflict(new { message = exception.Message });
+            return Conflict(new { message = ex.Message });
         }
     }
 
     [HttpDelete("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
         var deactivated = await _studentService.DeactivateAsync(id);
-
-        if (!deactivated)
-        {
-            return NotFound(new { message = "Aluno não encontrado." });
-        }
-
-        return NoContent();
+        return deactivated ? NoContent() : NotFound();
     }
 }
