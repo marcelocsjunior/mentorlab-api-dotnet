@@ -147,7 +147,7 @@ curl -s http://localhost:5080/api/students
 dotnet test MentorLab.sln
 ```
 
-Não fazer migration ao vivo. Migration ao vivo é igual atualizar firmware em produção: só parece boa ideia antes de começar.
+Não fazer migration ao vivo. A migration deve estar aplicada e validada antes da apresentação.
 
 ## 9. Plano B
 

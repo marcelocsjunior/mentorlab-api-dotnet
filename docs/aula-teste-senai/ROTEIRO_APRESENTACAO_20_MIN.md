@@ -312,7 +312,7 @@ dotnet test MentorLab.sln
 
 Fala:
 
-> Como o foco da aula é arquitetura e fluxo, se o runtime local oscilar, sigo pela validação já registrada: build, testes automatizados e GitHub Actions executados com sucesso.
+> Como o foco da aula é arquitetura e fluxo, se a execução local apresentar falha, sigo pela validação já registrada: build, testes automatizados e GitHub Actions executados com sucesso.
 
 ### Se o POST duplicar
 
