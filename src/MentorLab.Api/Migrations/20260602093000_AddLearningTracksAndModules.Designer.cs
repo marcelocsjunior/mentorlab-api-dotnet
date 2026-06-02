@@ -1,0 +1,113 @@
+using MentorLab.Api.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace MentorLab.Api.Migrations
+{
+    [DbContext(typeof(MentorLabDbContext))]
+    [Migration("20260602093000_AddLearningTracksAndModules")]
+    partial class AddLearningTracksAndModules
+    {
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
+
+            modelBuilder.Entity("MentorLab.Api.Entities.LearningTrack", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<System.DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<System.DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+                    b.ToTable("LearningTracks");
+                });
+
+            modelBuilder.Entity("MentorLab.Api.Entities.Module", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("LearningTrackId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("DisplayOrder");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<System.DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<System.DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+                    b.HasIndex("LearningTrackId");
+                    b.ToTable("Modules");
+                });
+
+            modelBuilder.Entity("MentorLab.Api.Entities.Student", b =>
+                {
+                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
+                    b.Property<System.DateTimeOffset>("CreatedAt").HasColumnType("TEXT");
+                    b.Property<string>("Email").IsRequired().HasMaxLength(180).HasColumnType("TEXT");
+                    b.Property<string>("FullName").IsRequired().HasMaxLength(160).HasColumnType("TEXT");
+                    b.Property<bool>("IsActive").HasColumnType("INTEGER");
+                    b.Property<System.DateTimeOffset?>("UpdatedAt").HasColumnType("TEXT");
+                    b.HasKey("Id");
+                    b.HasIndex("Email");
+                    b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("MentorLab.Api.Entities.Module", b =>
+                {
+                    b.HasOne("MentorLab.Api.Entities.LearningTrack", "LearningTrack")
+                        .WithMany("Modules")
+                        .HasForeignKey("LearningTrackId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                    b.Navigation("LearningTrack");
+                });
+
+            modelBuilder.Entity("MentorLab.Api.Entities.LearningTrack", b =>
+                {
+                    b.Navigation("Modules");
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
