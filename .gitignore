@@ -10,6 +10,17 @@
 *.userosscache
 *.sln.docstates
 *.env
+.env
+.env.*
+
+# Local databases and runtime data
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+src/**/data/
+!src/**/data/.gitkeep
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
